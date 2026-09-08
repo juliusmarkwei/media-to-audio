@@ -93,7 +93,7 @@ export default function App() {
       <div className="mx-auto flex max-w-2xl flex-col gap-5 sm:gap-6">
         <header className="flex items-center justify-between gap-3">
           <div className="flex items-baseline gap-2">
-            <span className="font-mono text-sm font-semibold tracking-tight">audio/convert</span>
+            <span className="font-mono text-sm font-semibold tracking-tight">media/audio</span>
             <span className="hidden font-mono text-xs text-zinc-400 sm:inline dark:text-zinc-500">
               mp3 · m4a · wav · ogg · opus · flac
             </span>
