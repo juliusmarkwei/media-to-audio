@@ -1,5 +1,70 @@
 @import 'tailwindcss';
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 body {
   margin: 0;
+  background-color: #f6f4ef;
+}
+
+.dark body {
+  background-color: #111110;
+}
+
+@keyframes drop-overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes drop-mark-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes drop-ring-pulse {
+  0%,
+  100% {
+    inset: 14px;
+    opacity: 0.55;
+  }
+  50% {
+    inset: 20px;
+    opacity: 1;
+  }
+}
+
+.drop-overlay {
+  animation: drop-overlay-in 0.15s ease-out;
+}
+
+.drop-overlay-mark {
+  animation: drop-mark-in 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.drop-overlay-ring {
+  animation: drop-ring-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes skeleton-wave {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+
+.skeleton-bar {
+  animation: skeleton-wave 1.1s ease-in-out infinite;
 }

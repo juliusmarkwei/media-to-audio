@@ -35,10 +35,12 @@ export default function ControlsPanel({
   }))
 
   return (
-    <div className="flex w-full flex-col gap-5 rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+    <div className="flex w-full flex-col gap-5 border border-zinc-200 p-6 dark:border-zinc-800">
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium text-slate-600">Output format</label>
+          <label className="font-mono text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+            Output format
+          </label>
           <Select
             ariaLabel="Output format"
             value={formatId}
@@ -48,11 +50,13 @@ export default function ControlsPanel({
         </div>
 
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium text-slate-600">Quality</label>
+          <label className="font-mono text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+            Quality
+          </label>
           {qualityOptions ? (
             <Select ariaLabel="Quality" value={bitrate} onChange={onBitrateChange} options={qualityOptions} />
           ) : (
-            <div className="flex items-center rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-400">
+            <div className="flex items-center border border-zinc-200 px-3.5 py-2.5 text-sm text-zinc-400 dark:border-zinc-800 dark:text-zinc-500">
               Lossless — no quality setting
             </div>
           )}
@@ -62,11 +66,11 @@ export default function ControlsPanel({
       <button
         onClick={onConvert}
         disabled={isBusy}
-        className="flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-3 text-sm font-semibold text-white shadow-sm shadow-indigo-200 transition-all hover:bg-indigo-500 hover:shadow-indigo-300 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-70 disabled:shadow-none"
+        className="flex items-center justify-center gap-2 bg-zinc-900 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#ff5a1f] disabled:cursor-not-allowed disabled:opacity-60 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-[#ff5a1f] dark:hover:text-white"
       >
         {isBusy ? (
           <>
-            <svg className="h-4 w-4 animate-spin text-white/80" viewBox="0 0 24 24" fill="none">
+            <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
               <circle className="opacity-25" cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="3" />
               <path className="opacity-90" d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
             </svg>
@@ -74,15 +78,15 @@ export default function ControlsPanel({
           </>
         ) : (
           <span>
-            {isTrimmed ? 'Trim & Convert' : 'Convert'} to {format.label}
+            {isTrimmed ? 'Trim & convert' : 'Convert'} to {format.label}
           </span>
         )}
       </button>
 
       {isBusy && (
-        <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
+        <div className="h-1 w-full overflow-hidden bg-zinc-100 dark:bg-zinc-800">
           <div
-            className="h-full rounded-full bg-indigo-500 transition-all duration-150"
+            className="h-full bg-[#ff5a1f] transition-all duration-150"
             style={{ width: `${Math.round(progress * 100)}%` }}
           />
         </div>

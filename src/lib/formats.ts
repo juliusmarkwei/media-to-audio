@@ -85,7 +85,7 @@ export const FORMATS: AudioFormat[] = [
   },
 ]
 
-export const ACCEPTED_INPUT_EXTENSIONS = [
+export const ACCEPTED_AUDIO_EXTENSIONS = [
   'mp3',
   'wav',
   'm4a',
@@ -94,12 +94,25 @@ export const ACCEPTED_INPUT_EXTENSIONS = [
   'opus',
   'flac',
   'wma',
-  'webm',
   'weba',
   'aiff',
   'aif',
   'amr',
 ]
+
+export const ACCEPTED_VIDEO_EXTENSIONS = [
+  'mp4',
+  'm4v',
+  'mov',
+  'webm',
+  'mkv',
+  'avi',
+  'wmv',
+  'flv',
+  '3gp',
+]
+
+export const ACCEPTED_INPUT_EXTENSIONS = [...ACCEPTED_AUDIO_EXTENSIONS, ...ACCEPTED_VIDEO_EXTENSIONS]
 
 export function formatTime(seconds: number): string {
   if (!Number.isFinite(seconds) || seconds < 0) seconds = 0

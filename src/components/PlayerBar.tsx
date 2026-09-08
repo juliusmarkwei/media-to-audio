@@ -12,10 +12,10 @@ export default function PlayerBar({ isPlaying, onTogglePlay, trimStart, trimEnd,
   const selectionLength = Math.max(trimEnd - trimStart, 0)
 
   return (
-    <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-slate-500">
+    <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-zinc-500 dark:text-zinc-400">
       <button
         onClick={onTogglePlay}
-        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-indigo-600 text-white transition-colors hover:bg-indigo-500"
+        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-zinc-300 text-zinc-700 transition-colors hover:border-[#ff5a1f] hover:text-[#ff5a1f] dark:border-zinc-700 dark:text-zinc-200"
         aria-label={isPlaying ? 'Pause' : 'Play selection'}
       >
         {isPlaying ? (
@@ -30,13 +30,15 @@ export default function PlayerBar({ isPlaying, onTogglePlay, trimStart, trimEnd,
         )}
       </button>
 
-      <div className="flex min-w-0 flex-1 flex-wrap items-center justify-between gap-x-3 gap-y-1 font-mono text-xs text-slate-400">
+      <div className="flex min-w-0 flex-1 flex-wrap items-center justify-between gap-x-3 gap-y-1 font-mono text-xs text-zinc-400 dark:text-zinc-500">
         <span>{formatTime(trimStart)}</span>
-        <span className="text-slate-500">Selection {formatTime(selectionLength)}</span>
+        <span className="text-zinc-500 dark:text-zinc-400">Selection {formatTime(selectionLength)}</span>
         <span>{formatTime(trimEnd)}</span>
       </div>
 
-      <span className="shrink-0 whitespace-nowrap text-xs text-slate-400">/ {formatTime(duration)} total</span>
+      <span className="shrink-0 whitespace-nowrap font-mono text-xs text-zinc-400 dark:text-zinc-500">
+        / {formatTime(duration)} total
+      </span>
     </div>
   )
 }

@@ -1,9 +1,13 @@
 import { useCallback, useMemo, useState } from 'react'
 import ControlsPanel from './components/ControlsPanel'
+import DragOverlay from './components/DragOverlay'
 import Dropzone from './components/Dropzone'
 import PlayerBar from './components/PlayerBar'
+import ThemeToggle from './components/ThemeToggle'
 import Waveform from './components/Waveform'
 import { useFFmpeg } from './hooks/useFFmpeg'
+import { useTheme } from './hooks/useTheme'
+import { useWindowFileDrop } from './hooks/useWindowFileDrop'
 import { FORMATS, type FormatId } from './lib/formats'
 
 export default function App() {
@@ -17,9 +21,11 @@ export default function App() {
   const [progress, setProgress] = useState(0)
   const [statusMessage, setStatusMessage] = useState('')
   const [outputName, setOutputName] = useState('')
+  const [previewError, setPreviewError] = useState(false)
 
   const { transcode, isLoading, error } = useFFmpeg()
   const [isConverting, setIsConverting] = useState(false)
+  const { theme, toggleTheme } = useTheme()
 
   const format = useMemo(() => FORMATS.find((f) => f.id === formatId)!, [formatId])
   const isTrimmed = duration > 0 && (trimStart > 0.05 || trimEnd < duration - 0.05)
@@ -33,7 +39,10 @@ export default function App() {
     setProgress(0)
     setStatusMessage('')
     setOutputName(f ? f.name.replace(/\.[^/.]+$/, '') : '')
+    setPreviewError(false)
   }, [])
+
+  const isDraggingFile = useWindowFileDrop(handleFile)
 
   const handleFormatChange = useCallback((id: FormatId) => {
     setFormatId(id)
@@ -78,79 +87,86 @@ export default function App() {
   }, [file, format, bitrate, trimStart, trimEnd, outputName, transcode])
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 px-3 py-6 sm:px-4 sm:py-10">
+    <div className="min-h-screen bg-[#f6f4ef] px-3 py-6 text-zinc-900 sm:px-4 sm:py-10 dark:bg-[#111110] dark:text-zinc-100">
+      {isDraggingFile && <DragOverlay />}
+
       <div className="mx-auto flex max-w-2xl flex-col gap-5 sm:gap-6">
-        <header className="flex flex-col items-center gap-3 text-center">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-lg shadow-indigo-200">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="h-6 w-6">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 18V5l12-2v13M9 18a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm12-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-            </svg>
+        <header className="flex items-center justify-between gap-3">
+          <div className="flex items-baseline gap-2">
+            <span className="font-mono text-sm font-semibold tracking-tight">audio/convert</span>
+            <span className="hidden font-mono text-xs text-zinc-400 sm:inline dark:text-zinc-500">
+              mp3 · m4a · wav · ogg · opus · flac
+            </span>
           </div>
-          <div className="flex flex-col gap-1.5">
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Audio Convertor & Trimmer</h1>
-            <p className="text-sm text-slate-500">
-              Convert between MP3, M4A, WAV, OGG, Opus and FLAC — trim before you export. Everything runs in your
-              browser, nothing is uploaded.
-            </p>
-          </div>
+          <ThemeToggle theme={theme} onToggle={toggleTheme} />
         </header>
 
         {!file && <Dropzone onFile={handleFile} />}
 
         {file && (
           <>
-            <div className="flex items-center justify-between gap-3 rounded-2xl bg-white px-4 py-3 shadow-sm ring-1 ring-slate-200">
+            <div className="flex items-center justify-between gap-3 border border-zinc-200 px-4 py-3 dark:border-zinc-800">
               <div className="flex min-w-0 flex-1 items-center gap-3">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-indigo-500">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="h-4.5 w-4.5">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 18V5l12-2v13M9 18a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm12-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                  </svg>
-                </div>
                 <div className="min-w-0 flex-1">
-                  <div className="flex items-baseline gap-1">
+                  <div className="flex min-w-0 items-baseline">
                     <input
                       value={outputName}
                       onChange={(e) => setOutputName(e.target.value)}
                       spellCheck={false}
                       aria-label="Output file name"
-                      className="min-w-0 flex-1 rounded-md border border-transparent bg-transparent px-1 -mx-1 text-sm font-medium text-slate-800 outline-none hover:border-slate-200 focus:border-indigo-300 focus:bg-indigo-50/50 focus:ring-2 focus:ring-indigo-200"
+                      style={{ width: `${Math.max(outputName.length, 1) + 1}ch` }}
+                      className="max-w-full min-w-0 shrink border border-transparent bg-transparent px-1 -mx-1 text-sm font-medium outline-none hover:border-zinc-200 focus:border-[#ff5a1f] dark:hover:border-zinc-700"
                     />
-                    <span className="shrink-0 text-sm font-medium text-slate-400">.{format.ext}</span>
+                    <span className="shrink-0 font-mono text-sm font-medium text-zinc-400 dark:text-zinc-500">
+                      .{format.ext}
+                    </span>
                   </div>
-                  <p className="px-1 text-xs text-slate-400">{(file.size / (1024 * 1024)).toFixed(2)} MB</p>
+                  <p className="px-1 font-mono text-xs text-zinc-400 dark:text-zinc-500">
+                    {(file.size / (1024 * 1024)).toFixed(2)} MB
+                  </p>
                 </div>
               </div>
               <button
                 onClick={() => handleFile(null)}
-                className="shrink-0 rounded-lg px-2.5 py-1.5 text-xs font-medium text-slate-400 transition-colors hover:bg-slate-50 hover:text-slate-600"
+                className="shrink-0 px-2.5 py-1.5 text-xs font-medium text-zinc-400 transition-colors hover:text-zinc-700 dark:hover:text-zinc-200"
               >
                 Change file
               </button>
             </div>
 
-            <Waveform
-              file={file}
-              onReady={(d) => {
-                setDuration(d)
-                setTrimEnd(d)
-              }}
-              onRegionChange={(start, end) => {
-                setTrimStart(start)
-                setTrimEnd(end)
-              }}
-              isPlaying={isPlaying}
-              onPlaybackEnd={() => setIsPlaying(false)}
-            />
+            {previewError ? (
+              <div className="border border-zinc-200 px-4 py-5 text-center text-sm text-zinc-500 dark:border-zinc-800 dark:text-zinc-400">
+                Can&apos;t preview this file&apos;s audio in-browser, but you can still convert the whole thing —
+                trimming is unavailable for this format.
+              </div>
+            ) : (
+              <>
+                <Waveform
+                  file={file}
+                  onReady={(d) => {
+                    setDuration(d)
+                    setTrimEnd(d)
+                  }}
+                  onRegionChange={(start, end) => {
+                    setTrimStart(start)
+                    setTrimEnd(end)
+                  }}
+                  onError={() => setPreviewError(true)}
+                  isPlaying={isPlaying}
+                  onPlaybackEnd={() => setIsPlaying(false)}
+                />
 
-            <div className="rounded-2xl bg-white px-4 py-3.5 shadow-sm ring-1 ring-slate-200">
-              <PlayerBar
-                isPlaying={isPlaying}
-                onTogglePlay={() => setIsPlaying((p) => !p)}
-                trimStart={trimStart}
-                trimEnd={trimEnd}
-                duration={duration}
-              />
-            </div>
+                <div className="border border-zinc-200 px-4 py-3.5 dark:border-zinc-800">
+                  <PlayerBar
+                    isPlaying={isPlaying}
+                    onTogglePlay={() => setIsPlaying((p) => !p)}
+                    trimStart={trimStart}
+                    trimEnd={trimEnd}
+                    duration={duration}
+                  />
+                </div>
+              </>
+            )}
 
             <ControlsPanel
               formatId={formatId}
@@ -168,8 +184,8 @@ export default function App() {
           </>
         )}
 
-        <footer className="mt-4 text-center text-xs text-slate-400">
-          Drag the edges of the highlighted region on the waveform to trim. Conversion happens locally via ffmpeg.wasm.
+        <footer className="mt-4 text-center font-mono text-xs text-zinc-400 dark:text-zinc-500">
+          drag a region's edges to trim · nothing leaves your browser · powered by ffmpeg.wasm
         </footer>
       </div>
     </div>

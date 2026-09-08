@@ -22,18 +22,18 @@ export default function Select({ value, onChange, options, ariaLabel, disabled }
     <RadixSelect.Root value={value} onValueChange={onChange} disabled={disabled}>
       <RadixSelect.Trigger
         aria-label={ariaLabel}
-        className="flex w-full items-center justify-between gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm font-medium text-slate-800 outline-none transition-colors hover:border-slate-300 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50 data-[state=open]:border-indigo-400 data-[state=open]:ring-2 data-[state=open]:ring-indigo-100"
+        className="flex w-full items-center justify-between gap-2 border border-zinc-300 bg-transparent px-3.5 py-2.5 text-sm font-medium text-zinc-800 outline-none transition-colors hover:border-zinc-400 focus:border-[#ff5a1f] data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50 data-[state=open]:border-[#ff5a1f] dark:border-zinc-700 dark:text-zinc-100 dark:hover:border-zinc-500"
       >
         <RadixSelect.Value>
           {selected && (
             <span className="flex items-baseline gap-1.5">
               <span>{selected.label}</span>
-              {selected.hint && <span className="text-xs font-normal text-slate-400">{selected.hint}</span>}
+              {selected.hint && <span className="font-mono text-xs font-normal text-zinc-400 dark:text-zinc-500">{selected.hint}</span>}
             </span>
           )}
         </RadixSelect.Value>
         <RadixSelect.Icon>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="h-4 w-4 text-slate-400">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="h-4 w-4 text-zinc-400">
             <path strokeLinecap="round" strokeLinejoin="round" d="m8 9 4-4 4 4M8 15l4 4 4-4" />
           </svg>
         </RadixSelect.Icon>
@@ -43,19 +43,19 @@ export default function Select({ value, onChange, options, ariaLabel, disabled }
         <RadixSelect.Content
           position="popper"
           sideOffset={6}
-          className="z-50 w-[var(--radix-select-trigger-width)] overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg shadow-slate-200/60"
+          className="z-50 w-[var(--radix-select-trigger-width)] overflow-hidden border border-zinc-300 bg-[#f6f4ef] dark:border-zinc-700 dark:bg-[#1a1a19]"
         >
-          <RadixSelect.Viewport className="p-1.5">
+          <RadixSelect.Viewport className="p-1">
             {options.map((opt) => (
               <RadixSelect.Item
                 key={opt.value}
                 value={opt.value}
-                className="flex cursor-pointer select-none items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-700 outline-none data-[highlighted]:bg-indigo-50 data-[highlighted]:text-indigo-700 data-[state=checked]:font-semibold data-[state=checked]:text-indigo-600"
+                className="flex cursor-pointer select-none items-center gap-2 px-3 py-2 text-sm text-zinc-700 outline-none data-[highlighted]:bg-zinc-900/[0.05] data-[state=checked]:font-semibold data-[state=checked]:text-[#ff5a1f] dark:text-zinc-200 dark:data-[highlighted]:bg-white/[0.06]"
               >
                 <RadixSelect.ItemText>{opt.label}</RadixSelect.ItemText>
-                {opt.hint && <span className="text-xs font-normal text-slate-400">{opt.hint}</span>}
+                {opt.hint && <span className="font-mono text-xs font-normal text-zinc-400 dark:text-zinc-500">{opt.hint}</span>}
                 {opt.recommended && (
-                  <span className="rounded-full bg-indigo-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-indigo-600">
+                  <span className="border border-[#ff5a1f]/40 px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wide text-[#ff5a1f]">
                     Recommended
                   </span>
                 )}
